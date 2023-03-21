@@ -127,3 +127,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Large file
+*.tar*
+*.tgz
+*.pkl
+
+*.gif
+*.mp4
+*.eps
+*.svg
+*.png
+
+middle-*
+z_*
+
+.*
+ckpt-*.pt
+
+# Exception
+!static/*
