@@ -7,6 +7,9 @@ import numpy as np
 import dadaptation
 from timm.scheduler import CosineLRScheduler
 import os, sys,copy
+
+from dlnn import DLNN
+
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(PARENT_DIR)
@@ -16,7 +19,6 @@ from nn_models import MLP
 from data import get_lagrangian_trajectory
 from data import get_DLNN_dataset,get_DLNN_dataset_all
 import matplotlib.pyplot as plt
-from dlnn import DLNN
 
 import pickle as pkl
 
@@ -121,16 +123,16 @@ def train(args):
     qd = 0
     for cycle in range(16) :
         if cycle == 0: 
-            args.samples = samples*20
+            args.samples = samples*10
             q = 1
             qd = 5
         elif cycle == 1 :
             args.samples = samples*5
             q = 1
-            qd = 5
+            qd = 3
         elif cycle == 2 :
             q = 1
-            qd = 3
+            qd = 1
 
         elif cycle == 3 :
             q = 0.75
@@ -154,7 +156,7 @@ def train(args):
             
         elif cycle == 8 :
             q = 1
-            qd = 1
+            qd = 0
 
         elif cycle == 9 :
             q=0.5
@@ -342,20 +344,19 @@ def train(args):
 
                 scheduler.step(step+1)
                 print("the worst train_loss in step {} : {:.4e}".format(step,np.max(stats['train_loss'][-len(train_loader):])))
-                with torch.no_grad() :
-                    model.eval()
-                    for b,(test_xb ,test_dxdtb) in enumerate(test_loader):
-                        if torch.cuda.is_available() :
-                            test_xb = test_xb.cuda()
-                            test_dxdtb = test_dxdtb.cuda()
+                model.eval()
+                for b,(test_xb ,test_dxdtb) in enumerate(test_loader):
+                    if torch.cuda.is_available() :
+                        test_xb = test_xb.cuda()
+                        test_dxdtb = test_dxdtb.cuda()
 
-                        # test step
-                        dxdt_hat = model.time_derivative(test_xb)
-                        test_loss = loss_fn(test_dxdtb[:,2:], dxdt_hat[:,2:])
-                        stats['test_loss'].append(test_loss.item())
+                    # test step
+                    dxdt_hat = model.time_derivative(test_xb)
+                    test_loss = loss_fn(test_dxdtb[:,2:], dxdt_hat[:,2:])
+                    stats['test_loss'].append(test_loss.item())
 
-                        if b % args.print_every == 0:
-                            print("step {}:{}:{}, test_loss {:.4e}".format(cycle,step, b, test_loss.item()))
+                    if b % args.print_every == 0:
+                        print("step {}:{}:{}, test_loss {:.4e}".format(cycle,step, b, test_loss.item()))
                                     
                 print("the worst test_loss in step {} : {:.4e}".format(step,np.max(stats['test_loss'][-len(test_loader):])))
                 mean_test_loss = np.mean(stats['test_loss'][-len(test_loader):])

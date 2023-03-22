@@ -6,6 +6,9 @@ import torch, argparse
 import numpy as np
 import dadaptation
 from timm.scheduler import CosineLRScheduler
+
+from dlnn import DLNN
+
 import os, sys,copy
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +19,6 @@ from nn_models import MLP
 from data import get_lagrangian_trajectory
 from data import get_DLNN_dataset,get_DLNN_dataset_all
 import matplotlib.pyplot as plt
-from dlnn import DLNN
 
 import pickle as pkl
 
@@ -345,20 +347,19 @@ def train(args):
 
                 scheduler.step(step+1)
                 print("the worst train_loss in step {} : {:.4e}".format(step,np.max(stats['train_loss'][-len(train_loader):])))
-                with torch.no_grad() :
-                    model.eval()
-                    for b,(test_xb ,test_dxdtb) in enumerate(test_loader):
-                        if torch.cuda.is_available() :
-                            test_xb = test_xb.cuda()
-                            test_dxdtb = test_dxdtb.cuda()
+                model.eval()
+                for b,(test_xb ,test_dxdtb) in enumerate(test_loader):
+                    if torch.cuda.is_available() :
+                        test_xb = test_xb.cuda()
+                        test_dxdtb = test_dxdtb.cuda()
 
-                        # test step
-                        dxdt_hat = model.time_derivative(test_xb)
-                        test_loss = loss_fn(test_dxdtb[:,1:], dxdt_hat[:,1:])
-                        stats['test_loss'].append(test_loss.item())
+                    # test step
+                    dxdt_hat = model.time_derivative(test_xb)
+                    test_loss = loss_fn(test_dxdtb[:,1:], dxdt_hat[:,1:])
+                    stats['test_loss'].append(test_loss.item())
 
-                        if b % args.print_every == 0:
-                            print("step {}:{}:{}, test_loss {:.4e}".format(cycle,step, b, test_loss.item()))
+                    if b % args.print_every == 0:
+                        print("step {}:{}:{}, test_loss {:.4e}".format(cycle,step, b, test_loss.item()))
                                     
                 print("the worst test_loss in step {} : {:.4e}".format(step,np.max(stats['test_loss'][-len(test_loader):])))
                 mean_test_loss = np.mean(stats['test_loss'][-len(test_loader):])
