@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Takemori"
+  given-names: "Masaki"
+- family-names: "Kamakura"
+  given-names: "Yoshinari"
+title: "Learning of Mechanical System Dynamics with Dissipative Lagrangian Neural Networks"
+date-released: 2023-03-15
+url: "https://github.com/WhiteTiger-21/dissipative_lnns"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Takemori"
+    given-names: "Masaki"
+  - family-names: "Kamakura"
+    given-names: "Yoshinari"
+  journal: "Proceedings of the 27th Student Convention of Kansai-Section of the Institute of Electronics, Information and Communication Engineers,Japan"
+  month: 3
+  start: B3-1 # First page number
+  end: B3-1 # Last page number
+  title: "Learning of Mechanical System Dynamics with Dissipative Lagrangian Neural Networks"  
+  year: 2023

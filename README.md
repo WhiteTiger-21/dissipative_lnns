@@ -43,3 +43,15 @@ CUDA Version 12.0
 Systems using Neural Network have made remarkable progress. However, understanding mechanical system dynamics, where intuitive understanding is important, is difficult.
 In research, Greydanus et al. proposed Dissipative Hamiltonian Neural Networks (D-HNN), which can automatically model the canonical equations of dissipative dynamical systems, and Cranmer et al. proposed Lagrangian Neural Networks (LNN), which can automatically model mechanical system dynamics based on the Lagrange equation.
 We construct a neural network model called Dissipative Lagrangian Neural Networks (D-LNN), which can predict mechanical systems with dissipation based on the Lagrange equation using the generalized coordinates that are easy to acquire and do not require difficult canonical momentum.
+
+---
+## Cite
+
+    @article{Takemori_Learning_of_Mechanical_2023,
+    author = {Takemori, Masaki and Kamakura, Yoshinari},
+    journal = {Proceedings of the 27th Student Convention of Kansai-Section of the Institute of Electronics, Information and Communication Engineers,Japan},
+    month = {3},
+    pages = {B3-1},
+    title = {{Learning of Mechanical System Dynamics with Dissipative Lagrangian Neural Networks}},
+    year = {2023}
+    }
